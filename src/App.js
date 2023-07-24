@@ -15,11 +15,21 @@ const App = () => {
 
   const handleLogin = () => {
     // Replace 'admin' with your desired password
-    if (password === 'admin') {
-      setLoggedIn(true);
-    } else {
-      alert('Invalid password!');
-    }
+    const loginData = {
+      password: password
+    };
+    axios.post('https://redjuice-api-ksas.onrender.com/api/v1/admin-auth', loginData)
+      .then(res => {
+        console.log(res.data.authenticated);
+        if (res.data.authenticated == true) {
+          setLoggedIn(true);
+        } else {
+          alert('Invalid password!');
+        }
+      })
+      .catch(error => {
+        console.error('Error posting data: ', error);
+      });
   };
 
   const handleSubmit = (e) => {
@@ -29,7 +39,7 @@ const App = () => {
       name: name
     };
   
-    axios.post('https://redjuice-api.onrender.com/api/v1', data)
+    axios.post('https://redjuice-api-ksas.onrender.com/api/v1', data)
       .then(response => {
         console.log('Post request successful:', response.data);
         // Reset the form
@@ -43,7 +53,7 @@ const App = () => {
   };
 
   const fetchData = () => {
-    axios.get('https://redjuice-api.onrender.com/api/v1')
+    axios.get('https://redjuice-api-ksas.onrender.com/api/v1')
       .then((res) => {
         setWhitelistedAddresses(res.data);
         console.log('res ==> '+res.data);
@@ -54,7 +64,7 @@ const App = () => {
   }
 
   const handleDelete = (address) => {
-    axios.delete(`https://redjuice-api.onrender.com/api/v1/`+address)
+    axios.delete(`https://redjuice-api-ksas.onrender.com/api/v1/`+address)
       .then(response => {
         console.log('Delete request successful:', response.data);
         const updatedAddresses = whitelistedAddresses.filter(item => item.address !== address);
